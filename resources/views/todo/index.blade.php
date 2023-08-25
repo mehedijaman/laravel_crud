@@ -1,3 +1,6 @@
+@php
+    $Todos = App\Models\Todo::all();
+@endphp
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,6 +14,7 @@
    <div class="h-screen w-screen bg-gradient-to-r from-red-300 to-sky-300 flex flex-col gap-2 p-10 items-center">
         <h1 class="text-xl text-red-900 font-bold">Simple Todo App</h1>
         <div class="max-w-4xl w-full bg-white p-2 rounded-sm shadow-lg">
+            @if(!isset($Item))
             <form action="/todo/store" method="POST" enctype="multipart/form-data" class="grid grid-cols-12 gap-2">
                 {{ csrf_field() }}
                 <div class="col-span-9">
@@ -20,16 +24,19 @@
                     <input class="w-full px-5 py-2 bg-sky-400 text-white rounded-md font-semibold hover:bg-sky-500  hover:cursor-pointer" type="submit" name="submit" value="Add new Task">
                 </div>
             </form>
+            @endif
 
-            <form action="/todo/update" method="POST" enctype="multipart/form-data" class="grid grid-cols-12 gap-2">
+            @if(isset($Item))
+            <form action="/todo/update/{{ $Item->id }}" method="POST" enctype="multipart/form-data" class="grid grid-cols-12 gap-2">
                 {{ csrf_field() }}
                 <div class="col-span-9">
-                    <input class="w-full p-2 border focus:outline-none focus:border-green-200 focus:shadow-lg" type="text" name="task" placeholder="Enter new Task Description">
+                    <input class="w-full p-2 border focus:outline-none focus:border-green-200 focus:shadow-lg" type="text" name="task" placeholder="Enter new Task Description" value="{{ $Item->task }}">
                 </div>
                 <div class="col-span-3 flex items-center">
                     <input class="w-full px-5 py-2 bg-sky-400 text-white rounded-md font-semibold hover:bg-sky-500  hover:cursor-pointer" type="submit" name="submit" value="Update Task">
                 </div>
             </form>
+            @endif
         </div>
 
         <div class="max-w-4xl w-full bg-white p-2 raounded-sm shadow-lg">
@@ -65,7 +72,7 @@
                             </form>
                             @endif
 
-                            <form action="/todo/edit/{{ $Todo->id }}" method="GET" enctype="multipart/form-data">
+                            <form action="/todo/edit/{{ $Todo->id }}" method="POST" enctype="multipart/form-data">
                                 {{ csrf_field() }}
                                 <input type="submit" name="submit" value="Edit" class="px-2 bg-yellow-400 text-white rounded-md hover:bg-yellow-600 font-semibold hover:cursor-pointer">
                             </form>

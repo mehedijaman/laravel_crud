@@ -12,8 +12,8 @@ class TodoController extends Controller
      */
     public function index()
     {
-        $Todos = Todo::all();
-        return view('todo.index', compact('Todos'));
+
+        return view('todo.index');
     }
 
     /**
@@ -34,7 +34,7 @@ class TodoController extends Controller
         $Todo->task = $request->task;
 
         $Todo->save();
-        return back();
+        return redirect('/todo');
     }
 
     /**
@@ -50,7 +50,9 @@ class TodoController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $Item = Todo::find($id);
+
+        return view('todo.index', compact('Item'));
     }
 
     /**
@@ -58,7 +60,10 @@ class TodoController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $Todo = Todo::find($id);
+        $Todo->task = $request->task;
+        $Todo->save();
+        return redirect('/todo');
     }
 
     /**
@@ -67,7 +72,7 @@ class TodoController extends Controller
     public function destroy(string $id)
     {
         Todo::find($id)->delete();
-        return back();
+        return redirect('/todo');
     }
 
     public function done(string $id){
@@ -76,7 +81,7 @@ class TodoController extends Controller
         $Todo->done = 1;
 
         $Todo->save();
-        return back();
+        return redirect('/todo');
     }
 
     public function undo(string $id){
@@ -85,6 +90,6 @@ class TodoController extends Controller
         $Todo->done = 0;
 
         $Todo->save();
-        return back();
+        return redirect('/todo');
     }
 }
