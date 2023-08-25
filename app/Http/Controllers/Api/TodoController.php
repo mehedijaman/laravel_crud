@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
 use App\Models\Todo;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
 
 class TodoController extends Controller
 {
@@ -21,17 +22,12 @@ class TodoController extends Controller
      */
     public function index()
     {
-        $PendingTasks = $this->PendingTasks;
-        $CompletedTasks = $this->CompletedTasks;
-        return view('todo.index', compact('PendingTasks', 'CompletedTasks'));
-    }
+        $Tasks = [
+            'PendingTasks' => $this->PendingTasks,
+            'CompletedTasks' => $this->CompletedTasks
+        ];
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        return response($Tasks);
     }
 
     /**
@@ -43,8 +39,14 @@ class TodoController extends Controller
 
         $Todo->task = $request->task;
 
-        $Todo->save();
-        return redirect('/todo');
+        try{
+            $Todo->save();
+            return response('200');
+        }
+        catch(\Exception $e){
+            return response('500'.$e->getMessage());
+        }
+
     }
 
     /**
@@ -62,10 +64,8 @@ class TodoController extends Controller
     {
         $Item = Todo::find($id);
 
-        $PendingTasks = $this->PendingTasks;
-        $CompletedTasks = $this->CompletedTasks;
+        return response($Item);
 
-        return view('todo.index', compact('Item', 'PendingTasks', 'CompletedTasks'));
     }
 
     /**
@@ -75,8 +75,13 @@ class TodoController extends Controller
     {
         $Todo = Todo::find($id);
         $Todo->task = $request->task;
-        $Todo->save();
-        return redirect('/todo');
+        try {
+            $Todo->save();
+            return response('200');
+        } catch (\Throwable $th) {
+            return response('500'.$e->getMessage());
+        }
+
     }
 
     /**
@@ -84,8 +89,13 @@ class TodoController extends Controller
      */
     public function destroy(string $id)
     {
-        Todo::find($id)->delete();
-        return redirect('/todo');
+        try{
+            Todo::find($id)->delete();
+        }
+        catch(\Exception $e){
+            return response('500'.$e->getMessage());
+        }
+
     }
 
     public function done(string $id){
@@ -93,8 +103,12 @@ class TodoController extends Controller
 
         $Todo->done = 1;
 
-        $Todo->save();
-        return redirect('/todo');
+        try {
+            $Todo->save();
+            return response('200');
+        } catch (\Throwable $th) {
+            return response('500'.$th->getMessage());
+        }
     }
 
     public function undo(string $id){
@@ -102,7 +116,11 @@ class TodoController extends Controller
 
         $Todo->done = 0;
 
-        $Todo->save();
-        return redirect('/todo');
+        try {
+            $Todo->save();
+            return response('200');
+        } catch (\Throwable $th) {
+            return response('500'.$th->getMessage());
+        }
     }
 }

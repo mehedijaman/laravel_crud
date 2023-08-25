@@ -1,6 +1,3 @@
-@php
-    $Todos = App\Models\Todo::all();
-@endphp
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -48,7 +45,59 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach($Todos as $Todo)
+                    <tr>
+                        <td colspan="2" class="font-bold text-center bg-red-400 text-white">Pending</td>
+                    </tr>
+                    @if(sizeof($PendingTasks) == 0)
+                    <tr>
+                        <td colspan="2">No pending task available</td>
+                    </tr>
+                    @endif
+                    @foreach($PendingTasks as $Todo)
+                    <tr>
+                        <td class="p-2 border border-slate-300">
+                            @if ($Todo->done != 0)
+                                <strike>{{ $Todo->task }}</strike>
+                            @else
+                                {{ $Todo->task }}
+                            @endif
+                        </td>
+                        <td class="p-2 border border-slate-300 flex gap-1 justify-end">
+                            @if ($Todo->done != 0)
+                            <form action="/todo/undo/{{ $Todo->id }}" method="POST" enctype="multipart/form-data">
+                                {{ csrf_field() }}
+                                <input type="submit" name="submit" value="Undo" class="px-2 bg-gray-400 text-white rounded-md hover:bg-gray-600 font-semibold hover:cursor-pointer">
+                            </form>
+                            @endif
+
+                            @if($Todo->done == 0)
+                            <form action="/todo/done/{{ $Todo->id }}" method="POST" enctype="multipart/form-data">
+                                {{ csrf_field() }}
+                                <input type="submit" name="submit" value="Mark as Done" class="px-2 bg-sky-400 text-white rounded-md hover:bg-sky-600 font-semibold hover:cursor-pointer">
+                            </form>
+                            @endif
+
+                            <form action="/todo/edit/{{ $Todo->id }}" method="POST" enctype="multipart/form-data">
+                                {{ csrf_field() }}
+                                <input type="submit" name="submit" value="Edit" class="px-2 bg-yellow-400 text-white rounded-md hover:bg-yellow-600 font-semibold hover:cursor-pointer">
+                            </form>
+
+                            <form action="/todo/destroy/{{ $Todo->id }}" method="POST" enctype="multipart/form-data">
+                                {{ csrf_field() }}
+                                <input type="submit" name="submit" value="Delete" class="px-2 bg-red-400 text-white rounded-md hover:bg-red-600 font-semibold hover:cursor-pointer">
+                            </form>
+                        </td>
+                    </tr>
+                    @endforeach
+                    <tr>
+                        <td colspan="2" class="font-bold bg-green-800 text-white text-center">Completed</td>
+                    </tr>
+                    @if(sizeof($CompletedTasks) == 0)
+                    <tr>
+                        <td colspan="2">No Completed task available</td>
+                    </tr>
+                    @endif
+                    @foreach($CompletedTasks as $Todo)
                     <tr>
                         <td class="p-2 border border-slate-300">
                             @if ($Todo->done != 0)
