@@ -25,12 +25,11 @@ class TodoController extends Controller
      */
     public function store(Request $request)
     {
-        $Todo  = new Todo();
-        $Todo->task = $request->task;
-
         try{
+            $Todo  = new Todo();
+            $Todo->task = $request->task;
             $Todo->save();
-            return response('200');
+            return response('New Task added', 201);
         }
         catch(\Throwable $th){
             return response('500 '.$th->getMessage());
@@ -43,8 +42,12 @@ class TodoController extends Controller
      */
     public function show(string $id)
     {
-        $Todo = Todo::find($id);
-        return response($Todo);
+        try {
+            $Todo = Todo::find($id);
+            return response($Todo, 200);
+        } catch (\Throwable $th) {
+            return response('500 '.$th->getMessage());
+        }
     }
 
     /**
@@ -52,8 +55,12 @@ class TodoController extends Controller
      */
     public function edit(string $id)
     {
-        $Item = Todo::find($id);
-        return response($Item);
+        try {
+            $Item = Todo::find($id);
+            return response($Item, 200);
+        } catch (\Throwable $th) {
+            return response('500 '.$th->getMessage());
+        }
     }
 
     /**
@@ -61,11 +68,11 @@ class TodoController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        $Todo = Todo::find($id);
-        $Todo->task = $request->task;
         try {
+            $Todo = Todo::find($id);
+            $Todo->task = $request->task;
             $Todo->save();
-            return response('200');
+            return response('Updated Successfully', 202);
         } catch (\Throwable $th) {
             return response('500 '.$th->getMessage());
         }
@@ -78,8 +85,8 @@ class TodoController extends Controller
     public function destroy(string $id)
     {
         try{
-            Todo::find($id)->delete();
-            return response('200');
+            $Item = Todo::find($id)->delete();
+            return response('Deleted Successfully', 200);
         }
         catch(\Throwable $th){
             return response('500 '.$th->getMessage());
@@ -88,26 +95,22 @@ class TodoController extends Controller
     }
 
     public function done(string $id){
-
-
         try {
             $Todo = Todo::find($id);
             $Todo->done = 1;
             $Todo->save();
-            return response('200');
+            return response('Marked as Done', 200);
         } catch (\Throwable $th) {
             return response('500 '.$th->getMessage());
         }
     }
 
     public function undo(string $id){
-        $Todo = Todo::find($id);
-
-        $Todo->done = 0;
-
         try {
+            $Todo = Todo::find($id);
+            $Todo->done = 0;
             $Todo->save();
-            return response('200');
+            return response('Undo Successfull', 200);
         } catch (\Throwable $th) {
             return response('500 '.$th->getMessage());
         }
