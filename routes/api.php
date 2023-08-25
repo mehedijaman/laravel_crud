@@ -27,6 +27,7 @@ Route::get('/student/edit/{id}', [StudentController::class, 'edit']);
 Route::post('/student/update/{id}', [StudentController::class, 'update']);
 
 Route::get('/todo', [TodoController::class,'index']);
+Route::get('/todo/show/{id}', [TodoController::class,'show']);
 Route::post('/todo/store', [TodoController::class,'store']);
 Route::post('/todo/edit/{id}', [TodoController::class,'edit']);
 Route::post('/todo/update/{id}', [TodoController::class,'update']);
