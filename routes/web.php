@@ -1,7 +1,8 @@
 <?php
 
+use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\StudentController;
+use Inertia\Inertia;
 use App\Http\Controllers\TodoController;
 
 /*
@@ -10,21 +11,29 @@ use App\Http\Controllers\TodoController;
 |--------------------------------------------------------------------------
 |
 | Here is where you can register web routes for your application. These
-| routes are loaded by the RouteServiceProvider and all of them will
-| be assigned to the "web" middleware group. Make something great!
+| routes are loaded by the RouteServiceProvider within a group which
+| contains the "web" middleware group. Now create something great!
 |
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return Inertia::render('Welcome', [
+        'canLogin' => Route::has('login'),
+        'canRegister' => Route::has('register'),
+        'laravelVersion' => Application::VERSION,
+        'phpVersion' => PHP_VERSION,
+    ]);
 });
 
-Route::get('/student', [StudentController::class, 'index']);
-Route::get('/student/create',  [StudentController::class, 'create']);
-Route::post('/student/store',  [StudentController::class, 'store']);
-Route::post('/student/destory/{id}',  [StudentController::class, 'destroy']);
-Route::get('/student/edit/{id}', [StudentController::class, 'edit']);
-Route::post('/student/update/{id}', [StudentController::class, 'update']);
+Route::middleware([
+    'auth:sanctum',
+    config('jetstream.auth_session'),
+    'verified',
+])->group(function () {
+    Route::get('/dashboard', function () {
+        return Inertia::render('Dashboard');
+    })->name('dashboard');
+});
 
 Route::get('/todo', [TodoController::class,'index']);
 Route::post('/todo/store', [TodoController::class,'store']);

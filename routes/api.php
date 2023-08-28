@@ -29,15 +29,15 @@ Route::group(['prefix' => 'student'], function(){
     Route::post('/update/{id}', [StudentController::class, 'update']);
 });
 
-Route::group(['prefix' => 'todo'], function(){
+
+Route::group(['prefix' => '/todo'], function(){
     Route::get('/', [TodoController::class,'index']);
-    Route::get('/show/{id}', [TodoController::class,'show']);
     Route::post('/store', [TodoController::class,'store']);
+    Route::get('/show/{id}', [TodoController::class,'show']);
     Route::get('/edit/{id}', [TodoController::class,'edit']);
     Route::post('/update/{id}', [TodoController::class,'update']);
-    Route::delete('/destroy/{id}', [TodoController::class,'destroy']);
+    Route::post('/destroy/{id}', [TodoController::class,'destroy']);
     Route::post('/done/{id}', [TodoController::class,'done']);
     Route::post('/undo/{id}', [TodoController::class,'undo']);
 });
-
 
